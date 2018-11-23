@@ -81,7 +81,8 @@ argstr(int n, char **pp)
     return -1;
   return fetchstr(addr, pp);
 }
-
+//ARVINDH
+extern int sys_backtrace(void);
 extern int sys_chdir(void);
 extern int sys_close(void);
 extern int sys_dup(void);
@@ -104,7 +105,9 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 
+//ARVINDH
 static int (*syscalls[])(void) = {
+[SYS_backtrace] sys_backtrace,
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
 [SYS_wait]    sys_wait,

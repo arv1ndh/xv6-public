@@ -89,3 +89,10 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+//ARVINDH
+int
+sys_backtrace(void)
+{
+    return 1;
+}
