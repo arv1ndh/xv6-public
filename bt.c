@@ -6,7 +6,6 @@ int baz() __attribute__((noinline));
 int baz() {
    int a; 
    a = backtrace();
-   printf(1, "a is %d\n",a);
    return a + uptime();  
 }
 

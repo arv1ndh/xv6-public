@@ -108,6 +108,15 @@ sys_backtrace(void)
     cprintf("ds: 0x%x\n", tf->ds);
     cprintf("cs: 0x%x\n", tf->cs);
     cprintf("eip: 0x%x\n", tf->eip);
-    cprintf("eflags: 0x%x",tf->eflags);
-    return 1;
+    cprintf("eflags: 0x%x\n",tf->eflags);
+    uint temp_ebp = tf->ebp;
+    uint i = 0;
+    for(;;temp_ebp = *((uint*)temp_ebp))
+    {
+        cprintf("#%d: 0x%x\n", i, *(uint*)(temp_ebp+4));
+        i++;
+        if (*(uint*)(temp_ebp+4) == 0xffffffff) 
+            break;
+    }
+    return 0;
 }
