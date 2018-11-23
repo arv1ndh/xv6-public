@@ -91,6 +91,7 @@ extern int sys_exit(void);
 extern int sys_fork(void);
 extern int sys_fstat(void);
 extern int sys_getpid(void);
+extern int sys_getprocinfo(void);
 extern int sys_kill(void);
 extern int sys_link(void);
 extern int sys_mkdir(void);
@@ -108,6 +109,7 @@ extern int sys_uptime(void);
 //ARVINDH
 static int (*syscalls[])(void) = {
 [SYS_backtrace] sys_backtrace,
+[SYS_getprocinfo] sys_getprocinfo,
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
 [SYS_wait]    sys_wait,

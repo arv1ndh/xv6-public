@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 //ARVINDH
 int backtrace(void);
+int getprocinfo(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

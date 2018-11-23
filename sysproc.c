@@ -120,3 +120,9 @@ sys_backtrace(void)
     }
     return 0;
 }
+
+int
+sys_getprocinfo(void)
+{
+    return 0;
+}
