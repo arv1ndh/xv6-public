@@ -1,3 +1,4 @@
+struct uproc;
 struct stat;
 struct rtcdate;
 
@@ -25,7 +26,7 @@ int sleep(int);
 int uptime(void);
 //ARVINDH
 int backtrace(void);
-int getprocinfo(void);
+int getprocinfo(int, struct uproc*);
 
 // ulib.c
 int stat(const char*, struct stat*);
