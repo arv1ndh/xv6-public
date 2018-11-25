@@ -2,21 +2,33 @@
 #include "stat.h"
 #include "uproc.h"
 #include "user.h"
+#include "param.h"
 
 int
 main(int argc, char *argv[])
 {
     struct uproc p;
     char *p_states[5] = {"embryo", "sleeping", "runnable", "running", "zombie"};
-    int b = getprocinfo(0,&p); 
-    if (b != -1) {
-        printf(1, "\tID\tP_ID\tSZ\tC_W\tK\tName\tState\n");
-        printf(1, "\t%d\t%d\t%d\t%s\t%s\t%s\t%s\n", p.pid, p.parent_pid, p.sz, p.channel_wait == 0 ? "No":"Yes",p.killed == 0 ? "No": "Yes",p.name, p_states[p.state]);
-        printf(1, "\n|LEGEND|\nID    --> Process ID\nP_ID  --> Process ID of Parent if present else 0\nSZ    --> Process Size\nC_W   --> Is the Process waiting on channel?\nK     --> Is the Process killed?\nName  --> Name of the process\nState --> State of the process\n\n");
-        //printf(1, "Process size: %d\n", p.sz);
-        //printf(1, "CHannel Wait: %d\n", p.channel_wait);
-        //printf(1, "Killed: %d\n", p.killed);
-        //printf(1, "Name: %s\n", p.name);
+    printf(1, "\tID\tP_ID\tSZ\tC_W\tK\tName\tState\n");
+    for (int i = 0; i<NPROC; i++)
+    {
+        int b = getprocinfo(i,&p); 
+        if (b != -1) {
+            printf(1, "\t%d", p.pid);
+            printf(1, "\t%d", p.parent_pid);
+            printf(1, "\t%d", p.sz);
+            printf(1, "\t%s", p.channel_wait == 0 ? "No":"Yes");
+            printf(1, "\t%s",p.killed == 0 ? "No": "Yes");
+            printf(1, "\t%s",p.name);
+            printf(1,"\t%s\n", p_states[p.state]);
+        }
     }
+    printf(1, "\n|LEGEND|\nID    --> Process ID\n");
+    printf(1,"P_ID  --> Process ID of Parent if present else 0\n");
+    printf(1,"SZ    --> Process Size\n");
+    printf(1,"C_W   --> Is the Process waiting on channel?\n");
+    printf(1,"K     --> Is the Process killed?\n");
+    printf(1,"Name  --> Name of the process\n");
+    printf(1,"State --> State of the process\n\n");
     exit();
 }
