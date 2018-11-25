@@ -8,9 +8,10 @@ int
 main(int argc, char *argv[])
 {
     struct uproc p;
+    int i;
     char *p_states[5] = {"embryo", "sleeping", "runnable", "running", "zombie"};
     printf(1, "\tID\tP_ID\tSZ\tC_W\tK\tName\tState\n");
-    for (int i = 0; i<NPROC; i++)
+    for (i = 0; i<NPROC; i++)
     {
         int b = getprocinfo(i,&p); 
         if (b != -1) {
