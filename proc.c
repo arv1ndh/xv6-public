@@ -543,7 +543,10 @@ getprocinfo(int p_no, struct uproc *up)
         return -1;
     up->sz = p->sz;
     up->pid = p->pid;
-    up->parent_pid = p->parent->pid;
+    if (p->parent)
+        up->parent_pid = p->parent->pid;
+    else
+        up->parent_pid = 0;
     up->killed = p->killed;
     safestrcpy(up->name, (const char*)p->name, sizeof(p->name));
     up->channel_wait = 0;

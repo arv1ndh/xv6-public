@@ -9,12 +9,12 @@ main(int argc, char *argv[])
     struct uproc p;
     int b = getprocinfo(0,&p); 
     if (b != -1) {
-        printf(1, "Process ID: %d\n", p.pid);
-        printf(1, "Parent Process ID: %d\n", p.parent_pid);
-        printf(1, "Process size: %d\n", p.sz);
-        printf(1, "CHannel Wait: %d\n", p.channel_wait);
-        printf(1, "Killed: %d\n", p.killed);
-        printf(1, "Name: %s\n", p.name);
+        printf(1, "\tID\tP_ID\tSZ\tC_W\tK\tName\n");
+        printf(1, "\t%d\t%d\t%d\t%d\t%d\t%s\n", p.pid, p.parent_pid, p.sz, p.channel_wait,p.killed,p.name);
+        //printf(1, "Process size: %d\n", p.sz);
+        //printf(1, "CHannel Wait: %d\n", p.channel_wait);
+        //printf(1, "Killed: %d\n", p.killed);
+        //printf(1, "Name: %s\n", p.name);
     }
     exit();
 }
