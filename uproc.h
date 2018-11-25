@@ -2,7 +2,7 @@
 //user process state information
 struct uproc {
     uint sz;                        // Size of the process memory
- //   enum uprocstate state;           // Process state
+    uint state;                     // Process state
     int pid;                        // Process Id
     int parent_pid;                 // Process Id of parent
     int channel_wait;               // check if the process is waiting on a channel

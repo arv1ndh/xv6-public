@@ -541,6 +541,7 @@ getprocinfo(int p_no, struct uproc *up)
     struct proc *p = &ptable.proc[p_no];
     if (p->state == UNUSED)
         return -1;
+    up->state = p->state;
     up->sz = p->sz;
     up->pid = p->pid;
     if (p->parent)
@@ -549,6 +550,9 @@ getprocinfo(int p_no, struct uproc *up)
         up->parent_pid = 0;
     up->killed = p->killed;
     safestrcpy(up->name, (const char*)p->name, sizeof(p->name));
-    up->channel_wait = 0;
+    if (p->chan)
+        up->channel_wait = 1;
+    else
+        up->channel_wait = 0;
     return 0;
 }
