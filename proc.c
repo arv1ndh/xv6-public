@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "uproc.h"
 
 struct {
   struct spinlock lock;
@@ -531,4 +532,20 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+//ARVINDH
+int
+getprocinfo(int p_no, struct uproc *up)
+{
+    struct proc *p = &ptable.proc[p_no];
+    if (p->state == UNUSED)
+        return -1;
+    up->sz = p->sz;
+    up->pid = p->pid;
+    up->parent_pid = p->parent->pid;
+    up->killed = p->killed;
+    safestrcpy(up->name, (const char*)p->name, sizeof(p->name));
+    up->channel_wait = 0;
+    return 0;
 }

@@ -129,5 +129,5 @@ sys_getprocinfo(void)
     struct uproc *p =0x0;
     if (argint(0, &n) < 0 || argptr(1,(char**) &p, sizeof(struct uproc) < 0))
         return -1;
-    return 0;
+    return getprocinfo(n, p);
 }
