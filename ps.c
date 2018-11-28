@@ -21,7 +21,7 @@ main(int argc, char *argv[])
             printf(1, "\t%s", p.channel_wait == 0 ? "No":"Yes");
             printf(1, "\t%s",p.killed == 0 ? "No": "Yes");
             printf(1, "\t%s",p.name);
-            printf(1,"\t%s\n", p_states[p.state]);
+            printf(1,"\t%s\n", p_states[p.state-1]);
         }
     }
     printf(1, "\n|LEGEND|\nID    --> Process ID\n");
