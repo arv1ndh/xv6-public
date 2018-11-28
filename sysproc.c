@@ -110,18 +110,8 @@ sys_backtrace(void)
     cprintf("cs: 0x%x\n", tf->cs);
     cprintf("eip: 0x%x\n", tf->eip);
     cprintf("eflags: 0x%x\n",tf->eflags);
-    register int *k_ebp asm ("ebp");
-    uint temp_ebp = *k_ebp;
     uint i = 0;
-    cprintf("Kernel Stack\n");
-    for(;;temp_ebp = *((uint*)temp_ebp))
-    {
-        if (*(uint*)(temp_ebp+4) < 0x80000000) 
-            break;
-        cprintf("#%d: 0x%x\n", i, *(uint*)(temp_ebp+4));
-        i++;
-    }
-    i = 0;
+    uint temp_ebp = tf->ebp;
     cprintf("User Stack\n");
     for(;;temp_ebp = *((uint*)temp_ebp))
     {
@@ -129,6 +119,17 @@ sys_backtrace(void)
         i++;
         if (*(uint*)(temp_ebp+4) == 0xffffffff) 
             break;
+    }
+    i = 0;
+    register int *k_ebp asm ("ebp");
+    temp_ebp = *k_ebp;
+    cprintf("Kernel Stack\n");
+    for(;;temp_ebp = *((uint*)temp_ebp))
+    {
+        if (*(uint*)(temp_ebp+4) < KERNBASE) 
+            break;
+        cprintf("#%d: 0x%x\n", i, *(uint*)(temp_ebp+4));
+        i++;
     }
     return 0;
 }
