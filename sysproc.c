@@ -110,8 +110,19 @@ sys_backtrace(void)
     cprintf("cs: 0x%x\n", tf->cs);
     cprintf("eip: 0x%x\n", tf->eip);
     cprintf("eflags: 0x%x\n",tf->eflags);
-    uint temp_ebp = tf->ebp;
+    register int *k_ebp asm ("ebp");
+    uint temp_ebp = *k_ebp;
     uint i = 0;
+    cprintf("Kernel Stack\n");
+    for(;;temp_ebp = *((uint*)temp_ebp))
+    {
+        if (*(uint*)(temp_ebp+4) < 0x80000000) 
+            break;
+        cprintf("#%d: 0x%x\n", i, *(uint*)(temp_ebp+4));
+        i++;
+    }
+    i = 0;
+    cprintf("User Stack\n");
     for(;;temp_ebp = *((uint*)temp_ebp))
     {
         cprintf("#%d: 0x%x\n", i, *(uint*)(temp_ebp+4));
