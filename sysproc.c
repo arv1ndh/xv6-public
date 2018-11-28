@@ -89,3 +89,11 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+//ARVINDH
+int
+sys_thread_create()
+{
+    cprintf("Hitting here");
+    return 0;
+}

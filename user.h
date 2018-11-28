@@ -23,6 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+//ARVINDH
+int thread_create(void (*fcn)(void*), void *arg, void *stack);
 
 // ulib.c
 int stat(const char*, struct stat*);

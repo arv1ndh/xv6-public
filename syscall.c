@@ -97,6 +97,8 @@ extern int sys_mknod(void);
 extern int sys_open(void);
 extern int sys_pipe(void);
 extern int sys_read(void);
+//ARVINDH
+extern int sys_thread_create(void);
 extern int sys_sbrk(void);
 extern int sys_sleep(void);
 extern int sys_unlink(void);
@@ -105,6 +107,8 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 
 static int (*syscalls[])(void) = {
+//ARVINDH
+[SYS_thread_create] sys_thread_create,
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
 [SYS_wait]    sys_wait,
