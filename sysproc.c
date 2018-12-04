@@ -99,7 +99,5 @@ sys_thread_create()
     void *stack;
     if (argptr(0, (char**)&func, sizeof(void*)) < 0 || argptr(1, (char**)&arg, sizeof(void*)) < 0 || argptr(2, (char**)&stack, sizeof(void*)) < 0 )
         return -1;
-    thread_create(func, arg, stack);
-    //cprintf("VALUE IN SYSCALL--> %p\n%p\n%p\n",func,arg,stack);
-    return 0;
+    return thread_create(func, arg, stack);
 }
