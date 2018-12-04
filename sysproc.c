@@ -107,3 +107,10 @@ sys_thread_join()
 {
     return thread_join();
 }
+
+int
+sys_thread_exit()
+{
+    thread_exit();
+    return 0;
+}

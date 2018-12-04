@@ -543,11 +543,8 @@ thread_create( void (*fcn)(void*), void *arg, void *stack)
     struct proc *curproc = myproc();
 
     sp = stack+4096;
-    *(sp-4) = (char*)arg;
-    *(sp-8) = (char*)0xffffffff;
-    cprintf("VALUE OF sp %p\n", sp);
-    cprintf("VALUE in sp %p\n", *(sp-4));
-    cprintf("VALUE OF arg %p\n", arg);
+    *(sp-1) = (char*)arg;
+    *(sp-2) = (char*)0xffffffff;
 
     if ((nt = allocproc()) == 0)
         return -1;
@@ -566,7 +563,7 @@ thread_create( void (*fcn)(void*), void *arg, void *stack)
     safestrcpy(nt->name, curproc->name, sizeof(curproc->name));
     tid = nt->pid;
     nt->tf->eip = (uint)fcn;
-    nt->tf->esp = (uint)(sp-8);
+    nt->tf->esp = (uint)(sp-2);
     acquire(&ptable.lock);
     nt->state = RUNNABLE;
     release(&ptable.lock);
@@ -608,4 +605,37 @@ thread_join(void)
         }
         sleep(curproc, &ptable.lock);
     }
+}
+
+void
+thread_exit(void)
+{
+    struct proc *curproc = myproc();
+    struct proc *p;
+    int fd;
+
+    for(fd = 0; fd < NOFILE; fd++) {
+        if(curproc->ofile[fd]) {
+            fileclose(curproc->ofile[fd]);
+            curproc->ofile[fd] = 0;
+        }
+    }
+    begin_op();
+    iput(curproc->cwd);
+    end_op();
+    curproc->cwd = 0;
+
+    acquire(&ptable.lock);
+    wakeup1(curproc->parent);
+
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if (p->parent == curproc) {
+            p->parent = initproc;
+            if (p->state == ZOMBIE)
+                wakeup1(initproc);
+        }
+    }
+    curproc->state = ZOMBIE;
+    sched();
+    panic("zombie exit");
 }
