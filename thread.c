@@ -1,11 +1,34 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "x86.h"
 
 struct balance {
     char name[32];
     int amount;
 };
+
+struct thread_sl {
+    uint locked;
+}lock;
+
+void
+initlock(struct thread_sl *lk)
+{
+    lk->locked = 0;
+}
+
+void
+thread_spin_lock(struct thread_sl *lk)
+{
+    while(xchg(&lk->locked, 1) != 0);
+}
+
+void
+thread_spin_unlock(struct thread_sl *lk)
+{
+    asm volatile("movl $0, %0" : "+m" (lk->locked) : );
+}
 
 volatile int total_balance = 0;
 
@@ -26,11 +49,11 @@ void do_work(void *arg){
     printf(1, "Starting do_work: s:%s\n", b->name);
 
     for (i = 0; i < b->amount; i++) { 
-         //thread_spin_lock(&lock);
+         thread_spin_lock(&lock);
          old = total_balance;
          delay(100000);
          total_balance = old + 1;
-         //thread_spin_unlock(&lock);
+         thread_spin_unlock(&lock);
     }
   
     printf(1, "Done s:%x\n", b->name);
@@ -43,6 +66,7 @@ int main(int argc, char *argv[]) {
 
   struct balance b1 = {"b1", 3200};
   struct balance b2 = {"b2", 2800};
+  initlock(&lock);
  
   void *s1, *s2;
   int t1, t2, r1, r2;
