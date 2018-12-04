@@ -532,3 +532,80 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+//ARVINDH
+int
+thread_create( void (*fcn)(void*), void *arg, void *stack)
+{
+    int i, tid;
+    char **sp;
+    struct proc *nt;
+    struct proc *curproc = myproc();
+
+    sp = stack+4096;
+    *(sp-4) = (char*)arg;
+    *(sp-8) = (char*)0xffffffff;
+    cprintf("VALUE OF sp %p\n", sp);
+    cprintf("VALUE in sp %p\n", *(sp-4));
+    cprintf("VALUE OF arg %p\n", arg);
+
+    if ((nt = allocproc()) == 0)
+        return -1;
+    nt->pgdir = curproc->pgdir;
+    nt->sz = curproc->sz;
+    nt->parent = curproc;
+    *nt->tf = *curproc->tf;
+    
+    nt->tf->eax = 0;
+
+    for(i=0; i< NOFILE; i++)
+        if(curproc->ofile[i])
+            nt->ofile[i] = filedup(curproc->ofile[i]);
+    nt->cwd = idup(curproc->cwd);
+
+    safestrcpy(nt->name, curproc->name, sizeof(curproc->name));
+    tid = nt->pid;
+    nt->tf->eip = (uint)fcn;
+    nt->tf->esp = (uint)(sp-8);
+    acquire(&ptable.lock);
+    nt->state = RUNNABLE;
+    release(&ptable.lock);
+    return tid;
+}
+
+int
+thread_join(void)
+{
+    struct proc *p;
+    int havekids, tid;
+    struct proc *curproc = myproc();
+
+    acquire(&ptable.lock);
+    for(;;)
+    {
+        havekids = 0;
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if(p->parent != curproc)
+                continue;
+            havekids = 1;
+            if(p->state == ZOMBIE) {
+                tid = p->pid;
+                kfree(p->kstack);
+                p->kstack = 0;
+                p->pid = 0;
+                p->parent = 0;
+                p->name[0] = 0;
+                p->killed = 0;
+                p->state = UNUSED;
+                release(&ptable.lock);
+                return tid;
+            }
+        }
+
+        if(!havekids || curproc->killed) {
+            release(&ptable.lock);
+            return -1;
+        }
+        sleep(curproc, &ptable.lock);
+    }
+}

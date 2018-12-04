@@ -108,6 +108,7 @@ void            exit(void);
 int             fork(void);
 //ARVINDH
 int             thread_create(void (*fcn)(void*), void*, void*);
+int             thread_join(void);
 int             growproc(int);
 int             kill(int);
 struct cpu*     mycpu(void);

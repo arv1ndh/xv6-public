@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 //ARVINDH
 int thread_create(void (*fcn)(void*), void *arg, void *stack);
+int thread_join(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

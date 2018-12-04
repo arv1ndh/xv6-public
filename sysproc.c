@@ -101,3 +101,9 @@ sys_thread_create()
         return -1;
     return thread_create(func, arg, stack);
 }
+
+int 
+sys_thread_join()
+{
+    return thread_join();
+}
