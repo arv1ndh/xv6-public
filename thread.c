@@ -12,6 +12,30 @@ struct thread_sl {
     uint locked;
 }lock;
 
+struct thread_mutex {
+    uint locked;
+}mlock;
+
+void
+thread_mutex_init(struct thread_mutex *m)
+{
+    m->locked = 0;
+}
+
+void
+thread_mutex_lock(struct thread_mutex *m)
+{
+    while(xchg(&m->locked, 1) != 0)
+        sleep(1);
+}
+
+void
+thread_mutex_unlock(struct thread_mutex *m)
+{
+    asm volatile("movl $0, %0" : "+m" (m->locked) : );
+}
+
+
 void
 initlock(struct thread_sl *lk)
 {
@@ -50,9 +74,11 @@ void do_work(void *arg){
 
     for (i = 0; i < b->amount; i++) { 
          thread_spin_lock(&lock);
+         //thread_mutex_lock(&mlock);
          old = total_balance;
          delay(100000);
          total_balance = old + 1;
+         //thread_mutex_unlock(&mlock);
          thread_spin_unlock(&lock);
     }
   
@@ -67,6 +93,7 @@ int main(int argc, char *argv[]) {
   struct balance b1 = {"b1", 3200};
   struct balance b2 = {"b2", 2800};
   initlock(&lock);
+  //thread_mutex_init(&mlock);
  
   void *s1, *s2;
   int t1, t2, r1, r2;
