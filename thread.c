@@ -37,7 +37,7 @@ thread_mutex_unlock(struct thread_mutex *m)
 
 
 void
-initlock(struct thread_sl *lk)
+thread_spin_init(struct thread_sl *lk)
 {
     lk->locked = 0;
 }
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 
   struct balance b1 = {"b1", 3200};
   struct balance b2 = {"b2", 2800};
-  initlock(&lock);
+  thread_spin_init(&lock);
   //thread_mutex_init(&mlock);
  
   void *s1, *s2;
